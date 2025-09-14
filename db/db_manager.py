@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from db.models import Base, User
 
@@ -18,16 +18,24 @@ class DatabaseManager:
         print("Таблицы созданы/проверены")
 
     def add_user(self, name, email, passwd):
-        session = self.Session()
-        try:
-            user = User(name=name, email=email, passwd=hasher.hash_string(passwd))
-            session.add(user)
-            session.commit()
-            print(f"Пользователь {name} добавлен!")
-            return user
-        except Exception as e:
-            session.rollback()
-            print(f"Ошибка при добавлении пользователя: {e}")
-            return None
-        finally:
-            session.close()
+        with self.Session() as session:
+            with session.begin():
+                hash_passwd = hasher.hash_string(passwd)
+                user = User(name=name, email=email, passwd=hash_passwd)
+                session.add(user)
+                print(f"Пользователь {name} добавлен в базу.")
+    
+    def login_user(self, name, passwd):
+        with self.Session() as session:
+            with session.begin():
+                user = session.scalar(select(User).filter(User.name == name))
+
+                try:
+                    current_passwd = hasher.hash_string(passwd)
+
+                    if current_passwd == user.passwd:
+                        print("Вы успешно вошли в аккаунт!")
+                    else:
+                        print("Логин или пароль не верный!")
+                except:
+                    print("Произошла ошибка, попробуйте снова.")

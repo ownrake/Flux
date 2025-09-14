@@ -21,23 +21,23 @@ class App(CTk):
 
         self.login_frame = self.tabview.tab("login")
 
-        self.frame_welcome = CTkLabel(self.login_frame, text="Welcome to Flux!")
-        self.frame_welcome.pack(padx=40, pady=20)
+        self.frame_welcome_login = CTkLabel(self.login_frame, text="Welcome to Flux!")
+        self.frame_welcome_login.pack(padx=40, pady=20)
 
-        self.frame_username = CTkLabel(self.login_frame, text="username")
-        self.frame_username.pack(padx=40, pady=20)
+        self.frame_username_login = CTkLabel(self.login_frame, text="username")
+        self.frame_username_login.pack(padx=40, pady=20)
 
-        self.entry_username = CTkEntry(self.login_frame, placeholder_text="введите username")
-        self.entry_username.pack(padx=40, pady=20)
+        self.entry_username_login = CTkEntry(self.login_frame, placeholder_text="введите username")
+        self.entry_username_login.pack(padx=40, pady=20)
 
-        self.frame_passwd = CTkLabel(self.login_frame, text="passwd")
-        self.frame_passwd.pack(padx=40, pady=20)
+        self.frame_passwd_login = CTkLabel(self.login_frame, text="passwd")
+        self.frame_passwd_login.pack(padx=40, pady=20)
 
-        self.entry_passwd = CTkEntry(self.login_frame, placeholder_text="введите passwd")
-        self.entry_passwd.pack(padx=40, pady=20)
+        self.entry_passwd_login = CTkEntry(self.login_frame, placeholder_text="введите passwd")
+        self.entry_passwd_login.pack(padx=40, pady=20)
 
-        self.button_continie = CTkButton(self.login_frame, text="Далее", command=self.puffer)
-        self.button_continie.pack(padx=40, pady=20)
+        self.button_continie_login = CTkButton(self.login_frame, text="Далее", command=self.login)
+        self.button_continie_login.pack(padx=40, pady=20)
 
 
 
@@ -68,9 +68,12 @@ class App(CTk):
         self.button_continie.pack(padx=40, pady=20)
 
     
-    def puffer(self):
-        user = self.entry_username.get()
-        passwd = self.entry_passwd.get()
+    def login(self):
+        user = self.entry_username_login.get()
+        passwd = self.entry_passwd_login.get()
+
+        db.login_user(user, passwd)
+
 
     
     def register(self):
