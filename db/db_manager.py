@@ -1,6 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models import Base, User  # Явно импортируем нужные классы
+from db.models import Base, User
+
+from core.hasher.hasher import Hasher
+
+hasher = Hasher()
 
 class DatabaseManager:
     def __init__(self, db_url='sqlite:///mydatabase.sqlite3'):
@@ -16,7 +20,7 @@ class DatabaseManager:
     def add_user(self, name, email, passwd):
         session = self.Session()
         try:
-            user = User(name=name, email=email, passwd=passwd)
+            user = User(name=name, email=email, passwd=hasher.hash_string(passwd))
             session.add(user)
             session.commit()
             print(f"Пользователь {name} добавлен!")
